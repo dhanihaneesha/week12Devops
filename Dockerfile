@@ -1,6 +1,19 @@
-FROM python:3.9-slim-buster
+FROM python:3.9-slim
+
+# Set work directory
 WORKDIR /app
-COPY . /app
+
+# Copy requirements first (better caching)
+COPY requirements.txt .
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the app
+COPY . .
+
+# Expose the port the app runs on
 EXPOSE 5000
-CMD ["python3","app.py"]
+
+# Run the application
+CMD ["python", "app.py"]
