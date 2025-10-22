@@ -25,20 +25,24 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Build Docker Image"
-                bat "docker build -t seleniumdemoapp:v1 ."
+                bat "docker build -t week12:v1 ."
             }
         }
         stage('Docker Login') {
             steps {
-                  bat 'docker login -u vaddeusha -p password'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat '''
+                        docker login -u %DOCKER_USER% -p %DOCKER_PASS%
+                    '''
                 }
             }
+        }
         stage('push Docker Image to Docker Hub') {
             steps {
                 echo "push Docker Image to Docker Hub"
-                bat "docker tag seleniumdemoapp:v1 vaddeusha/sample:seleniumtestimage"               
+                bat "docker tag week12:v1 dhanihaneesha/week12:v1"               
                     
-                bat "docker push vaddeusha/sample:seleniumtestimage"
+                bat "docker push dhanihaneesha/week12:v1"
                 
             }
         }
